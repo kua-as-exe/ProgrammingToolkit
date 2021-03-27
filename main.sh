@@ -8,10 +8,10 @@ mag=$'\e[1;35m'
 cyn=$'\e[1;36m'
 end=$'\e[0m'
 clear
-for program in ./*.cpp; do
+for program in ./programas/*.cpp; do
   programName=$(basename $program);
-  if [[ ${programName:0:1} != "_" ]]; then
-    printf "${cyn}$program${end}\n"
+  #if [[ ${programName:0:1} != "_" ]]; then
+    printf "${cyn}$programName${end}\n"
     clang++-7 -pthread -std=c++17 -o main $program
     if [ -e "main" ]; then
       for filepath in ./casos/*.txt; do
@@ -25,5 +25,5 @@ for program in ./*.cpp; do
       rm ./main;
     fi
     echo;
-  fi
+  #fi
 done
