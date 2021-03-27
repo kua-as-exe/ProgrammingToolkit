@@ -13,10 +13,9 @@ for program in ./*.cpp; do
   if [[ ${programName:0:1} != "_" ]]; then
     printf "${cyn}$program${end}\n"
     clang++-7 -pthread -std=c++17 -o main $program
-    if [ -e "$filepath" ]; then
+    if [ -e "main" ]; then
       for filepath in ./casos/*.txt; do
         filename=$(basename $filepath .txt)
-        #echo "Res:" $([$filepath])
         if [[ ${filename:0:1} != "_" ]] ; then
           printf "${yel}► $filename${end}\n";  
           ./main < $filepath
