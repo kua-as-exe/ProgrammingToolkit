@@ -1,2 +1,4 @@
-*.cpp
-*.txt
+casos/*.txt
+!casos/1.txt
+programas/*.txt
+!programas/main.cpp

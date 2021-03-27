@@ -1,2 +1,2 @@
 language = "c"
-run = "./main.sh"
+run = "chmod +x ./main.sh; ./main.sh"
