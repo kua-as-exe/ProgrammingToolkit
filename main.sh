@@ -8,22 +8,42 @@ mag=$'\e[1;35m'
 cyn=$'\e[1;36m'
 end=$'\e[0m'
 clear
-for program in ./programas/*.cpp; do
+for program in ./programas/*; do
   programName=$(basename $program);
-  #if [[ ${programName:0:1} != "_" ]]; then
-    printf "${cyn}$programName${end}\n"
-    clang++-7 -pthread -std=c++17 -o main $program
-    if [ -e "main" ]; then
-      for filepath in ./casos/*.txt; do
-        filename=$(basename $filepath .txt)
-        if [[ ${filename:0:1} != "_" ]] ; then
-          printf "${yel}► $filename${end}\n";  
-          ./main < $filepath
+  extension=${program##*.};
+
+  #ignore files if name begins with "_"
+  if [[ ${programName:0:1} != "_" ]]; then
+    # cpp programs
+    if [[ $extension == "cpp" ]]; then
+      printf "${cyn}$programName${end} ${blu}(c++)${end}\n";
+      clang++-7 -pthread -std=c++17 -o main $program
+      if [ -e "main" ]; then
+        for testFile in ./casos/*.txt; do
+          testFilename=$(basename $testFile .txt)
+          if [[ ${testFilename:0:1} != "_" ]] ; then
+            printf "${yel}► $testFilename${end}\n";  
+            ./main < $testFile
+            printf "\n" ;
+          fi
+        done
+        rm ./main;
+      fi
+      echo;
+    fi
+
+    # python programs
+    if [[ $extension == "py" ]]; then
+      printf "${cyn}$programName${end} ${yel}(python)${end}\n";
+      for testFile in ./casos/*.txt; do
+        testFilename=$(basename $testFile .txt)
+        if [[ ${testFilename:0:1} != "_" ]] ; then
+          printf "${yel}► $testFilename${end}\n";  
+          python $program < $testFile
           printf "\n" ;
         fi
       done
-      rm ./main;
     fi
-    echo;
-  #fi
+
+  fi
 done
