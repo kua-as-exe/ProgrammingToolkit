@@ -1,17 +1,22 @@
 #!/bin/bash
 #Programa para probar los casos de prueba
-red=$'\e[1;31m'
-grn=$'\e[1;32m'
-yel=$'\e[1;33m'
-blu=$'\e[1;34m'
-mag=$'\e[1;35m'
-cyn=$'\e[1;36m'
-end=$'\e[0m'
-clear
-showCases=false # Muestra detalles los casos de prueba (true/false)
-showResults=false # Muestra la salida de los programas (true/false)
-showTime=true # Muestra el tiempo tltal (true/false)
+
+showCases=true # Muestra detalles los casos de prueba
+showResults=true # Muestra la salida de los programas
+showTime=false # Muestra el tiempo tltal
 timePrecision=5  # Número de decimales [0, 9]
+
+# - Jorge Arreola
+
+clear
+bla=$'\e[1;30m'; gray=$'\e[1;90m'
+red=$'\e[1;31m'; lred=$'\e[1;91m'
+grn=$'\e[1;32m'; lgrn=$'\e[1;92m'
+yel=$'\e[1;33m'; lyel=$'\e[1;93m'
+blu=$'\e[1;34m'; lblu=$'\e[1;94m'
+mag=$'\e[1;35m'; lmag=$'\e[1;95m'
+cyn=$'\e[1;36m'; lcyn=$'\e[1;96m'
+end=$'\e[0m'   ; whit=$'\e[1;97m'
 
 for program in ./programas/*; do
   programName=$(basename $program)
@@ -92,16 +97,42 @@ for program in ./programas/*; do
           if [ $showResults == true ] ; then  printf "\n$out\n"; fi
 
           # compare with expected output (.out files)
-            if [ -e "./casos/$testFilename.out" ]; then
-              outputFilename="./casos/$testFilename.out"
-              expected=$(cat $outputFilename)
-              if [[ $out == $expected ]]; then
-                printf "${grn}AC${end}"
-              else
-                printf "${red}WA${end}"
-              fi
+          if [ -e "./casos/$testFilename.out" ]; then
+            outputFilename="./casos/$testFilename.out"
+            expected=$(cat $outputFilename)
+            if [[ $out == $expected ]]; then
+              printf "${grn}AC${end}"
+            else
+              printf "${red}WA${end}"
             fi
-            printf "\n\n" 
+          fi
+          printf "\n\n"
+        fi
+      done
+    fi
+
+    # javascript programs
+    runNodePath='./helpers/run.js'
+    if [[ $extension == "js" ]]; then
+      printf "${cyn}$programName${end} ${lyel}(javascript)${end}\n"
+      for testFile in ./casos/*.in; do
+        testFilename=$(basename $testFile .in)
+        if [[ ${testFilename:0:1} != "_" ]] ; then
+          printf "${yel}► $testFilename${end} ";  
+          out=$(node $runNodePath $program $testFile)
+          if [ $showResults == true ] ; then  printf "\n$out\n"; fi
+
+          # compare with expected output (.out files)
+          if [ -e "./casos/$testFilename.out" ]; then
+            outputFilename="./casos/$testFilename.out"
+            expected=$(cat $outputFilename)
+            if [[ $out == $expected ]]; then
+              printf "${grn}AC${end}"
+            else
+              printf "${red}WA${end}"
+            fi
+          fi
+          printf "\n\n"
 
         fi
       done
