@@ -2,7 +2,8 @@
 #Programa para probar los casos de prueba
 
 showCases=true # Muestra detalles los casos de prueba
-showResults=false # Muestra la salida de los programas
+showResults=true # Muestra la salida de los programas
+showExpected=true # Muestra la salida esperada si se obtuvo respuesta incorrecta
 showTime=true # Muestra el tiempo tltal
 timePrecision=5  # Número de decimales [0, 9]
 
@@ -102,18 +103,22 @@ run(){
         totalTime=$(($totalTime+$testDuration))
 
         if [ $showResults == true ] ; then  
-          printf "\n$out\n"; 
+          printf " $out\t\t"; 
         fi
 
         # compare with expected output (.out files)
         if [ -e "./casos/$testFilename.out" ]; then
           outputFilename="./casos/$testFilename.out"
           expected=$(cat $outputFilename)
-          if [[ $out == $expected ]]; then
-            printCase "${grn}AC${end}"
+          processedOutput="${out##*$'\n'}" # get last line
+          if [[ $processedOutput == $expected ]]; then
+            printCase "(${grn}AC${end})"
             ac=$(($ac+1))
           else
-            printCase "${red}WA${end}"
+            printCase "(${red}WA${end})"
+            if [ $showExpected == true ] ; then  
+              printf " $expected ($(cat $testFile))"
+            fi
           fi
           totalTests=$(($totalTests+1))
         fi
